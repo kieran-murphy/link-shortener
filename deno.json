@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "dev": "deno serve --watch -A -R main.ts"
+    "dev": "deno serve -A --watch src/main.ts",
+    "docker": "./docker-serve.sh"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
