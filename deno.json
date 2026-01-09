@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno serve -A --watch src/main.ts",
+    "dev": "deno serve --watch -A --unstable-kv src/main.ts",
     "docker": "./docker-serve.sh"
   },
   "imports": {

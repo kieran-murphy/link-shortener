@@ -21,3 +21,51 @@ export async function generateShortCode(longUrl: string) {
 
     return shortCode;
 }
+
+const kv = await Deno.openKv();
+
+export type ShortLink = {
+    shortCode: string;
+    longUrl: string;
+    createdAt: number;
+    userId: string;
+    clickCount: number;
+    lastClickEvent?: string;
+}
+
+export async function storeShortLink(longUrl: string, shortCode: string, userId: string) {
+    const shortLinkKey = ["shortlinks", shortCode];
+    const data: ShortLink = {
+        shortCode,
+        longUrl,
+        userId,
+        createdAt: Date.now(),
+        clickCount: 0,
+    };
+
+    const res = await kv.set(shortLinkKey, data);
+
+    if (!res.ok) {
+        // Handle errors
+    }
+
+    return res;
+}
+
+export async function getShortLink(shortCode: string) {
+    const link = await kv.get<ShortLink>(["shortlinks", shortCode]);
+    return link.value;
+}
+
+export async function getAllShortLinks() {
+  const links: ShortLink[] = [];
+
+  // List all entries with the "shortlinks" prefix
+  const iter = kv.list<ShortLink>({ prefix: ["shortlinks"] });
+
+  for await (const entry of iter) {
+    links.push(entry.value);
+  }
+
+  return links;
+}
