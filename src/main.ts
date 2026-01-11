@@ -1,8 +1,20 @@
 import { generateShortCode, getAllShortLinks, getShortLink, storeShortLink } from "./db.ts";
 import { Router } from "./router.ts";
+import { HomePage } from "./ui.tsx";
+import { render } from "npm:preact-render-to-string";
+
 const app = new Router();
 
-app.get('/', () => new Response('Hi Mom!'))
+app.get("/", () => {
+  return new Response(
+    render(HomePage({user: null })), 
+    {
+    status: 200,
+    headers: {
+      "content-type": "text/html",
+    },
+  });
+});
 
 app.post('/health-check', () => new Response("It's ALIVE!"))
 

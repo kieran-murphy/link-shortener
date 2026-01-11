@@ -15,7 +15,8 @@
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.6": "1.0.6",
     "jsr:@std/path@^1.1.4": "1.1.4",
-    "jsr:@std/streams@^1.0.16": "1.0.16"
+    "jsr:@std/streams@^1.0.16": "1.0.16",
+    "npm:preact-render-to-string@*": "6.6.5_preact@10.28.2"
   },
   "jsr": {
     "@std/assert@1.0.16": {
@@ -78,6 +79,20 @@
       "integrity": "85030627befb1767c60d4f65cb30fa2f94af1d6ee6e5b2515b76157a542e89c4"
     }
   },
+  "npm": {
+    "preact-render-to-string@6.6.5_preact@10.28.2": {
+      "integrity": "sha512-O6MHzYNIKYaiSX3bOw0gGZfEbOmlIDtDfWwN1JJdc/T3ihzRT6tGGSEWE088dWrEDGa1u7101q+6fzQnO9XCPA==",
+      "dependencies": [
+        "preact"
+      ]
+    },
+    "preact@10.28.2": {
+      "integrity": "sha512-lbteaWGzGHdlIuiJ0l2Jq454m6kcpI1zNje6d8MlGAFlYvP2GO4ibnat7P74Esfz4sPTdM6UxtTwh/d3pwM9JA=="
+    }
+  },
+  "redirects": {
+    "https://esm.sh/preact/jsx-runtime": "https://esm.sh/preact@10.28.2/jsx-runtime"
+  },
   "remote": {
     "https://deno.land/std@0.152.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.152.0/async/abortable.ts": "87aa7230be8360c24ad437212311c9e8d4328854baec27b4c7abb26e85515c06",
@@ -101,7 +116,10 @@
     "https://deno.land/std@0.152.0/http/http_status.ts": "897575a7d6bc2b9123f6a38ecbc0f03d95a532c5d92029315dc9f508e12526b8",
     "https://deno.land/std@0.152.0/http/mod.ts": "c9d4aa4e4fb5d817de8d1b7dba53fe23d037499c5bb57697017d1f3641415afc",
     "https://deno.land/std@0.152.0/http/negotiation.ts": "f35b1ff2ad4ff9feaa00ac234960b398172768205c8eceaef7f2eafe34716ba2",
-    "https://deno.land/std@0.152.0/http/server.ts": "0b0a9f3abfcfecead944b31ee9098a0c11a59b0495bf873ee200eb80e7441483"
+    "https://deno.land/std@0.152.0/http/server.ts": "0b0a9f3abfcfecead944b31ee9098a0c11a59b0495bf873ee200eb80e7441483",
+    "https://esm.sh/preact@10.28.2/denonext/jsx-runtime.mjs": "95cc067e404a177506f3a935198f827c73a58cab90babfe935bedf7fee3f4f97",
+    "https://esm.sh/preact@10.28.2/denonext/preact.mjs": "ab3a20633b3548758fff9dbd3a2fd5ff64174b229c27655c3abbac0455667ed7",
+    "https://esm.sh/preact@10.28.2/jsx-runtime": "c1bf3a9684a132415cf86c6e6939f5da383aa520c48d42b93a5e3e7f10cda41a"
   },
   "workspace": {
     "dependencies": [
