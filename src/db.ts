@@ -69,3 +69,22 @@ export async function getAllShortLinks() {
 
   return links;
 }
+
+export type GitHubUser = {
+    login: string; // username
+    avatar_url: string;
+    html_url: string;
+};
+
+
+export async function storeUser(sessionId: string, userData: GitHubUser) {
+    const key = ["sessions", sessionId];
+    const res = await kv.set(key, userData);
+    return res;
+}
+
+export async function getUser(sessionId: string) {
+    const key = ["sessions", sessionId];
+    const res = await kv.get<GitHubUser>(key);
+    return res.value;
+}
