@@ -1,6 +1,6 @@
 import { generateShortCode, getAllShortLinks, getShortLink, storeShortLink } from "./db.ts";
 import { Router } from "./router.ts";
-import { HomePage } from "./ui.tsx";
+import { CreateShortlinkPage, HomePage, UnauthorizedPage } from "./ui.tsx";
 import { render } from "npm:preact-render-to-string";
 import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import { handleGithubCallback } from "./auth.ts";
@@ -20,6 +20,14 @@ app.get("/oauth/signin", (req: Request) => signIn(req));
 app.get("/oauth/signout", signOut);
 app.get("/oauth/callback", handleGithubCallback);
 
+function unauthorizedResponse() {
+  return new Response(render(UnauthorizedPage()), {
+    status: 401,
+    headers: {
+      "content-type": "text/html",
+    },
+  });
+}
 
 app.get("/", () => {
   return new Response(
@@ -34,47 +42,53 @@ app.get("/", () => {
 
 app.post('/health-check', () => new Response("It's ALIVE!"))
 
-app.post("/links", async (req) => {
-  const { longUrl } = await req.json();
-  const shortCode = await generateShortCode(longUrl);
-  await storeShortLink(longUrl, shortCode, 'testUser');
-  
-  return new Response("success!", {
-    status: 201,
+app.get("/links/new", (_req) => {
+  if (!app.currentUser) return unauthorizedResponse();
+
+  return new Response(render(CreateShortlinkPage()), {
+    status: 200,
+    headers: {
+      "content-type": "text/html",
+    },
   });
 });
 
 
-app.get("/links/:id", async (_req, _info) => {
+app.post("/links", async (req) => {
+  if (!app.currentUser) return unauthorizedResponse();
 
-  const url = new URL(_req.url);
-  const parts = url.pathname.split("/");
-  const shortCode = parts[2];
+  // Parse form data
+  const formData = await req.formData();
+  const longUrl = formData.get("longUrl") as string;
 
-  const data = await getShortLink(shortCode!)
+  if (!longUrl) {
+    return new Response("Missing longUrl", { status: 400 });
+  }
 
-  return new Response(JSON.stringify(data), {
-    status: 201,
+  const shortCode = await generateShortCode(longUrl);
+  await storeShortLink(longUrl, shortCode, app.currentUser.login);
+
+  // Redirect to the links list page after successful creation
+  return new Response(null, {
+    status: 303,
     headers: {
-      "content-type": "application/json",
+      "Location": "/links",
     },
-
-  });
-
-})
-
-app.get("/link/all", async (_req, _info) => {
-
-  const data = await getAllShortLinks()
-
-  return new Response(JSON.stringify(data), {
-    status: 201,
-    headers: {
-      "content-type": "application/json",
-    },
-
   });
 })
+
+  app.get("/links", async () => {
+  if (!app.currentUser) return unauthorizedResponse();
+
+  const shortLinks = await getUserLinks(app.currentUser.login);
+
+  return new Response(render(LinksPage({ shortLinkList: shortLinks })), {
+    status: 200,
+    headers: {
+      "content-type": "text/html",
+    },
+  });
+});
 
 
 export default {
