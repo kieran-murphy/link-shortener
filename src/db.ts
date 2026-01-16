@@ -88,3 +88,9 @@ export async function getUser(sessionId: string) {
     const res = await kv.get<GitHubUser>(key);
     return res.value;
 }
+
+export async function getUserLinks(userId: string) {
+  const list = kv.list<ShortLink>({ prefix: ["shortlinks"] });
+  const allLinks = await Array.fromAsync(list);
+  return allLinks.map(v => v.value).filter(v => v.userId === userId);
+}

@@ -1,6 +1,6 @@
-import { generateShortCode, getAllShortLinks, getShortLink, storeShortLink } from "./db.ts";
+import { generateShortCode, getAllShortLinks, getShortLink, getUserLinks, storeShortLink } from "./db.ts";
 import { Router } from "./router.ts";
-import { CreateShortlinkPage, HomePage, UnauthorizedPage } from "./ui.tsx";
+import { CreateShortlinkPage, HomePage, LinksPage, UnauthorizedPage } from "./ui.tsx";
 import { render } from "npm:preact-render-to-string";
 import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import { handleGithubCallback } from "./auth.ts";
@@ -77,7 +77,7 @@ app.post("/links", async (req) => {
   });
 })
 
-  app.get("/links", async () => {
+app.get("/links", async () => {
   if (!app.currentUser) return unauthorizedResponse();
 
   const shortLinks = await getUserLinks(app.currentUser.login);

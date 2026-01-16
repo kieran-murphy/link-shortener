@@ -11,7 +11,6 @@ const {
 
 export async function getCurrentUser(req: Request) {
     const sessionId = await getSessionId(req);
-    console.log(sessionId)
     return sessionId ? await getUser(sessionId) : null;
 }
 
