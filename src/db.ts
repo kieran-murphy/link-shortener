@@ -33,6 +33,15 @@ export type ShortLink = {
     lastClickEvent?: string;
 }
 
+export type ClickAnalytics = {
+  shortUrl: string;
+  createdAt: number;
+  ipAddress: string;
+  userAgent: string;
+  country?: string;
+};
+
+
 export async function storeShortLink(longUrl: string, shortCode: string, userId: string) {
     const shortLinkKey = ["shortlinks", shortCode];
     const data: ShortLink = {
@@ -93,4 +102,40 @@ export async function getUserLinks(userId: string) {
   const list = kv.list<ShortLink>({ prefix: ["shortlinks"] });
   const allLinks = await Array.fromAsync(list);
   return allLinks.map(v => v.value).filter(v => v.userId === userId);
+}
+
+export async function incrementClickCount(
+  shortCode: string,
+  data?: Partial<ClickAnalytics>,
+) {
+  const shortLinkKey = ["shortlinks", shortCode];
+  const shortLink = await kv.get(shortLinkKey);
+  const shortLinkData = shortLink.value as ShortLink;
+
+  const newClickCount = shortLinkData?.clickCount + 1;
+
+  const analyicsKey = ["analytics", shortCode, newClickCount];
+  const analyticsData = {
+    shortCode,
+    createdAt: Date.now(),
+    ...data,
+    // ipAddress: "192.168.1.1",
+    // userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    // country: "United States"
+  };
+
+  const res = await kv.atomic()
+    .check(shortLink)
+    .set(shortLinkKey, {
+      ...shortLinkData,
+      clickCount: newClickCount,
+    })
+    .set(analyicsKey, analyticsData)
+    .commit();
+
+  if (!res.ok) {
+    console.error("Error recording click!");
+  }
+
+  return res;
 }

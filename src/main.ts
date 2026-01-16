@@ -1,6 +1,6 @@
-import { generateShortCode, getAllShortLinks, getShortLink, getUserLinks, storeShortLink } from "./db.ts";
+import { generateShortCode, getAllShortLinks, getShortLink, getUserLinks, incrementClickCount, storeShortLink } from "./db.ts";
 import { Router } from "./router.ts";
-import { CreateShortlinkPage, HomePage, LinksPage, UnauthorizedPage } from "./ui.tsx";
+import { CreateShortlinkPage, HomePage, LinksPage, NotFoundPage, ShortlinkViewPage, UnauthorizedPage } from "./ui.tsx";
 import { render } from "npm:preact-render-to-string";
 import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import { handleGithubCallback } from "./auth.ts";
@@ -88,6 +88,58 @@ app.get("/links", async () => {
       "content-type": "text/html",
     },
   });
+});
+
+app.get("/links/:id", async (_req, _info) => {
+  const url = new URL(_req.url);
+  const parts = url.pathname.split("/");
+  const shortCode = parts[2];
+  const shortLink = await getShortLink(shortCode!);
+
+  return new Response(render(ShortlinkViewPage({ shortLink })), {
+    status: 200,
+    headers: {
+      "content-type": "text/html",
+    },
+  });
+});
+
+app.get("/:id", async (_req, _info) => {
+  const url = new URL(_req.url);
+  const parts = url.pathname.split("/");
+  const shortCode = parts[1];
+  const shortLink = await getShortLink(shortCode);
+
+  if (shortLink) {
+    // Capture analytics data
+    const ipAddress = _req.headers.get("x-forwarded-for") ||
+    _req.headers.get("cf-connecting-ip") || "Unknown";
+    const userAgent = _req.headers.get("user-agent") || "Unknown";
+    const country = _req.headers.get("cf-ipcountry") || "Unknown";
+
+    // Increment click count and store analytics data
+    await incrementClickCount(shortCode, {
+      ipAddress,
+      userAgent,
+      country,
+    });
+
+    // Redirect to the long URL
+    return new Response(null, {
+      status: 303,
+      headers: {
+        "Location": shortLink.longUrl,
+      },
+    });
+  } else {
+    // Render 404 page
+    return new Response(render(NotFoundPage({ shortCode })), {
+      status: 404,
+      headers: {
+        "Content-Type": "text/html",
+      },
+    });
+  }
 });
 
 
