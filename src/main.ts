@@ -1,9 +1,10 @@
-import { generateShortCode, getAllShortLinks, getShortLink, getUserLinks, incrementClickCount, storeShortLink } from "./db.ts";
+import { generateShortCode, getAllShortLinks, getClickEvent, getShortLink, getUserLinks, incrementClickCount, storeShortLink, watchShortLink } from "./db.ts";
 import { Router } from "./router.ts";
 import { CreateShortlinkPage, HomePage, LinksPage, NotFoundPage, ShortlinkViewPage, UnauthorizedPage } from "./ui.tsx";
 import { render } from "npm:preact-render-to-string";
 import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
 import { handleGithubCallback } from "./auth.ts";
+import { serveDir } from "@std/http";
 
 const app = new Router();
 
@@ -53,6 +54,53 @@ app.get("/links/new", (_req) => {
   });
 });
 
+
+app.get("/realtime/:id", (_req, _info) => {
+  if (!app.currentUser) return unauthorizedResponse();
+  const url = new URL(_req.url);
+  const parts = url.pathname.split("/");
+  const shortCode = parts[2];
+
+  const stream = watchShortLink(shortCode!);
+
+  const body = new ReadableStream({
+    async start(controller) {
+      while (true) {
+        const { done } = await stream.read();
+        if (done) {
+          return;
+        }
+
+        const shortLink = await getShortLink(shortCode);
+        const clickAnalytics = shortLink!.clickCount > 0 &&
+          await getClickEvent(shortCode, shortLink!.clickCount);
+
+        controller.enqueue(
+          new TextEncoder().encode(
+            `data: ${
+              JSON.stringify({
+                clickCount: shortLink!.clickCount,
+                clickAnalytics,
+              })
+            }\n\n`,
+          ),
+        );
+        console.log("Stream updated");
+      }
+    },
+    cancel() {
+      stream.cancel();
+    },
+  });
+
+  return new Response(body, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+    },
+  });
+});
 
 app.post("/links", async (req) => {
   if (!app.currentUser) return unauthorizedResponse();
@@ -142,6 +190,8 @@ app.get("/:id", async (_req, _info) => {
   }
 });
 
+// Static Assets
+app.get("/static/*", (req) => serveDir(req));
 
 export default {
   fetch(req) {

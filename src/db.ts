@@ -61,6 +61,15 @@ export async function storeShortLink(longUrl: string, shortCode: string, userId:
     return res;
 }
 
+export async function getClickEvent(shortCode: string, clickId: number) {
+  const analytics = await kv.get<ClickAnalytics>([
+    "analytics",
+    shortCode,
+    clickId,
+  ]);
+  return analytics.value;
+}
+
 export async function getShortLink(shortCode: string) {
     const link = await kv.get<ShortLink>(["shortlinks", shortCode]);
     return link.value;
@@ -138,4 +147,10 @@ export async function incrementClickCount(
   }
 
   return res;
+}
+
+export function watchShortLink(shortCode: string) {
+  const shortLinkKey = ["shortlinks", shortCode];
+  const shortLinkStream = kv.watch<ShortLink[]>([shortLinkKey]).getReader();
+  return shortLinkStream;
 }
