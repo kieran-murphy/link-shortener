@@ -1,7 +1,9 @@
 {
   "tasks": {
     "dev": "deno serve --watch --unstable-kv --env -A src/main.ts",
-    "docker": "./docker-serve.sh"
+    "docker": "./docker-serve.sh",
+    "test": "deno test tests/",
+    "deploy": "deployctl deploy --project kmurp-link-shortener"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
@@ -10,5 +12,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "npm:preact"
-  }
+  },
+  "deploy": {
+    "entrypoint": "src/main.ts"
+  } 
 }
