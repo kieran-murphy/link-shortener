@@ -8,13 +8,16 @@ interface PageProps {
   shortLinkList?: (ShortLink | null)[];
 }
 
-const BASE_URL = Deno.env.get("DENO_ENV") === "dev"
-  ? "http://localhost:8000"
-  : "https://link.fireship.app";
+const BASE_URL =
+  Deno.env.get("DENO_ENV") === "dev"
+    ? "http://localhost:8000"
+    : "https://link.fireship.app";
 
 export function Layout({ children }: { children: ComponentChildren }) {
   return (
-    <html data-theme="cupcake"> {/* DaisyUI theme */}
+    <html data-theme="cupcake">
+      {" "}
+      {/* DaisyUI theme */}
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,18 +27,32 @@ export function Layout({ children }: { children: ComponentChildren }) {
           type="text/css"
         />
         <script src="https://cdn.tailwindcss.com"></script>
-        <title>Link App</title>
+        <title>Zappy-Link</title>
       </head>
       <body class="min-h-screen bg-base-200 text-base-content">
         <header class="navbar bg-base-100 shadow-md px-6">
           <div class="flex-1">
-            <a href="/" class="text-xl font-bold text-primary">link.fireship.app</a>
+            <a href="/" class="text-xl font-bold text-primary">
+              Zappy-Link
+            </a>
           </div>
           <nav>
             <ul class="menu menu-horizontal px-1">
-              <li><a href="/" class="hover:text-primary">Home</a></li>
-              <li><a href="/links" class="hover:text-primary">My Links</a></li>
-              <li><a href="/links/new" class="hover:text-primary">Create Links</a></li>
+              <li>
+                <a href="/" class="hover:text-primary">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="/links" class="hover:text-primary">
+                  My Links
+                </a>
+              </li>
+              <li>
+                <a href="/links/new" class="hover:text-primary">
+                  Create Links
+                </a>
+              </li>
             </ul>
           </nav>
         </header>
@@ -46,7 +63,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
 
         <footer class="footer footer-center bg-base-100 text-base-content p-4 mt-auto border-t">
           <aside>
-            <p>© {new Date().getFullYear()} link.fireship.app</p>
+            <p>© {new Date().getFullYear()} Zappy-Link</p>
           </aside>
         </footer>
       </body>
@@ -59,17 +76,25 @@ export function HomePage({ user }: { user?: { login: string } }) {
     <Layout>
       <div class="card w-full max-w-md bg-base-100 shadow-xl">
         <div class="card-body items-center text-center">
-          <h1 class="card-title text-3xl font-bold">Welcome to link.fireship.app</h1>
+          <h1 class="card-title text-3xl font-bold">Welcome to Zappy-Link</h1>
           {user ? (
             <>
-              <p class="text-lg">Welcome back, <span class="font-semibold">{user.login}</span>!</p>
+              <p class="text-lg">
+                Welcome back, <span class="font-semibold">{user.login}</span>!
+              </p>
               <div class="card-actions mt-4">
-                <a href="/links/new" class="btn btn-primary">Create New Link</a>
-                <a href="/oauth/signout" class="btn btn-outline">Sign Out</a>
+                <a href="/links/new" class="btn btn-primary">
+                  Create New Link
+                </a>
+                <a href="/oauth/signout" class="btn btn-outline">
+                  Sign Out
+                </a>
               </div>
             </>
           ) : (
-            <a href="/oauth/signin" class="btn btn-primary mt-4">Sign In with GitHub</a>
+            <a href="/oauth/signin" class="btn btn-primary mt-4">
+              Sign In with GitHub
+            </a>
           )}
         </div>
       </div>
@@ -121,7 +146,9 @@ export function NotFoundPage({ shortCode }: { shortCode: string }) {
             <p className="py-6">
               Sorry, the shortlink "{shortCode}" doesn't exist.
             </p>
-            <a href="/" className="btn btn-primary">Go to Homepage</a>
+            <a href="/" className="btn btn-primary">
+              Go to Homepage
+            </a>
           </div>
         </div>
       </div>
@@ -204,7 +231,7 @@ export function LinksPage({ shortLinkList }: PageProps) {
                 key={link.shortCode}
                 className="card bg-base-200 hover:bg-base-300 transition-colors"
               >
-                <div className="card-body">
+                <div className="card-body max-w-lg">
                   <h3 className="card-title text-primary hover:text-primary-focus">
                     <a href={`/links/${link.shortCode}`}>{link.shortCode}</a>
                   </h3>
