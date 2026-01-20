@@ -15,8 +15,7 @@ const BASE_URL =
 
 export function Layout({ children }: { children: ComponentChildren }) {
   return (
-    <html data-theme="cupcake">
-      {" "}
+    <html data-theme="night">
       {/* DaisyUI theme */}
       <head>
         <meta charSet="UTF-8" />
