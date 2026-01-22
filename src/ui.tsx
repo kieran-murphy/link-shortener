@@ -29,6 +29,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
         <title>Zappy-Link</title>
       </head>
       <body class="min-h-screen bg-base-200 text-base-content">
+        <div class="flex flex-col min-h-screen">
         <header class="navbar bg-base-100 shadow-md px-6">
           <div class="flex-1">
             <a href="/" class="text-xl font-bold text-primary">
@@ -65,6 +66,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
             <p>© {new Date().getFullYear()} Zappy-Link</p>
           </aside>
         </footer>
+        </div>
       </body>
     </html>
   );
@@ -221,36 +223,44 @@ export function UnauthorizedPage() {
 export function LinksPage({ shortLinkList }: PageProps) {
   return (
     <Layout>
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title text-2xl mb-6">Your Shortlinks</h2>
-          <div className="space-y-4">
+      <div className="card bg-base-100 shadow-xl mx-auto w-full max-w-3xl sm:my-6">
+        <div className="card-body p-4 sm:p-6">
+          <h2 className="card-title text-2xl mb-4 sm:mb-6 text-center sm:text-left">
+            Your Shortlinks
+          </h2>
+
+          <div className="space-y-3 sm:space-y-4">
             {shortLinkList?.map((link) => (
               <div
                 key={link.shortCode}
-                className="card bg-base-200 hover:bg-base-300 transition-colors"
+                className="card bg-base-200 hover:bg-base-300 transition-colors rounded-lg"
               >
-                <div className="card-body max-w-lg">
-                  <h3 className="card-title text-primary hover:text-primary-focus">
-                    <a href={`/links/${link.shortCode}`}>{link.shortCode}</a>
-                  </h3>
-                  <p className="text-base-content/70 truncate">
-                    {link.longUrl}
-                  </p>
-                  <div className="flex gap-4 text-sm text-base-content/60">
-                    <span>
-                      Created: {new Date(link.createdAt).toLocaleDateString()}
-                    </span>
-                    <div className="badge badge-primary">
+                <div className="card-body p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <h3 className="card-title text-primary hover:text-primary-focus break-all">
+                      <a href={`/links/${link.shortCode}`}>
+                        {link.shortCode}
+                      </a>
+                    </h3>
+                    <div className="badge badge-primary mt-2 sm:mt-0 sm:ml-4">
                       {link.clickCount} clicks
                     </div>
+                  </div>
+
+                  <p className="text-base-content/70 break-all text-sm sm:text-base">
+                    {link.longUrl}
+                  </p>
+
+                  <div className="text-xs sm:text-sm text-base-content/60 mt-2">
+                    Created: {new Date(link.createdAt).toLocaleDateString()}
                   </div>
                 </div>
               </div>
             ))}
           </div>
+
           {(!shortLinkList || shortLinkList.length === 0) && (
-            <div className="alert alert-info">
+            <div className="alert alert-info mt-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -272,6 +282,7 @@ export function LinksPage({ shortLinkList }: PageProps) {
     </Layout>
   );
 }
+
 
 export function ShortlinkViewPage({ shortLink }: PageProps) {
   return (
