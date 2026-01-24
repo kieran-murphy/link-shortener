@@ -1,5 +1,5 @@
-import { encodeBase64Url, encodeHex } from "jsr:@std/encoding";
-import { crypto } from "jsr:@std/crypto/crypto";
+import { encodeBase64Url, encodeHex } from "@std/encoding";
+import { crypto } from "@std/crypto/crypto";
 
 export async function generateShortCode(longUrl: string) {
 
@@ -128,9 +128,6 @@ export async function incrementClickCount(
     shortCode,
     createdAt: Date.now(),
     ...data,
-    // ipAddress: "192.168.1.1",
-    // userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-    // country: "United States"
   };
 
   const res = await kv.atomic()

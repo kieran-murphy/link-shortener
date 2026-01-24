@@ -1,5 +1,5 @@
-import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
-import { pick } from "jsr:@std/collections/pick";
+import { createGitHubOAuthConfig, createHelpers } from "@deno/kv-oauth";
+import { pick } from "@std/collections";
 import { type GitHubUser, getUser, storeUser } from "./db.ts";
 
 const oauthConfig = createGitHubOAuthConfig();

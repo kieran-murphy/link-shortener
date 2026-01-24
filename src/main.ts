@@ -1,8 +1,8 @@
-import { generateShortCode, getAllShortLinks, getClickEvent, getShortLink, getUserLinks, incrementClickCount, storeShortLink, watchShortLink } from "./db.ts";
+import { generateShortCode, getClickEvent, getShortLink, getUserLinks, incrementClickCount, storeShortLink, watchShortLink } from "./db.ts";
 import { Router } from "./router.ts";
 import { CreateShortlinkPage, HomePage, LinksPage, NotFoundPage, ShortlinkViewPage, UnauthorizedPage } from "./ui.tsx";
-import { render } from "npm:preact-render-to-string";
-import { createGitHubOAuthConfig, createHelpers } from "jsr:@deno/kv-oauth";
+import { render } from "preact-render-to-string";
+import { createGitHubOAuthConfig, createHelpers } from "@deno/kv-oauth";
 import { handleGithubCallback } from "./auth.ts";
 import { serveDir } from "@std/http";
 
@@ -21,6 +21,17 @@ app.get("/oauth/signin", (req: Request) => signIn(req));
 app.get("/oauth/signout", signOut);
 app.get("/oauth/callback", handleGithubCallback);
 
+app.get("/favicon.ico", async () => {
+  try {
+    const file = await Deno.readFile("./public/favicon.ico");
+    return new Response(file, {
+      headers: { "content-type": "image/x-icon" },
+    });
+  } catch {
+    return new Response("Favicon not found", { status: 404 });
+  }
+});
+
 function unauthorizedResponse() {
   return new Response(render(UnauthorizedPage()), {
     status: 401,
@@ -32,7 +43,7 @@ function unauthorizedResponse() {
 
 app.get("/", () => {
   return new Response(
-    render(HomePage({ user: app.currentUser })), 
+    render(HomePage({ user: app.currentUser ?? undefined })), 
     {
     status: 200,
     headers: {

@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('realtime script loaded')
-    const pathParts = window.location.pathname.split('/');
+    const pathParts = globalThis.location.pathname.split('/');
     const shortCode = pathParts[pathParts.length - 1]; 
     const eventSource = new EventSource('/realtime/' + shortCode);
 

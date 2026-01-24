@@ -1,5 +1,5 @@
 /** @jsxImportSource https://esm.sh/preact */
-import type { ComponentChildren } from "npm:preact";
+import type { ComponentChildren } from "preact";
 import type { GitHubUser, ShortLink } from "./db.ts";
 
 interface PageProps {
@@ -15,8 +15,7 @@ const BASE_URL =
 
 export function Layout({ children }: { children: ComponentChildren }) {
   return (
-    <html data-theme="night">
-      {/* DaisyUI theme */}
+    <html data-theme="night">  
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,6 +24,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
           rel="stylesheet"
           type="text/css"
         />
+        <link rel="icon" type="image/x-icon" sizes="any" href="/favicon.ico" />
         <script src="https://cdn.tailwindcss.com"></script>
         <title>Zappy-Link</title>
       </head>
@@ -33,7 +33,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
         <header class="navbar bg-base-100 shadow-md px-6">
           <div class="flex-1">
             <a href="/" class="text-xl font-bold text-primary">
-              Zappy-Link
+              Zappy-Link ⚡
             </a>
           </div>
           <nav>
@@ -63,7 +63,7 @@ export function Layout({ children }: { children: ComponentChildren }) {
 
         <footer class="footer footer-center bg-base-100 text-base-content p-4 mt-auto border-t">
           <aside>
-            <p>© {new Date().getFullYear()} Zappy-Link</p>
+            <p>© {new Date().getFullYear()} Zappy-Link ⚡</p>
           </aside>
         </footer>
         </div>
@@ -77,7 +77,7 @@ export function HomePage({ user }: { user?: { login: string } }) {
     <Layout>
       <div class="card w-full max-w-md bg-base-100 shadow-xl">
         <div class="card-body items-center text-center">
-          <h1 class="card-title text-3xl font-bold">Welcome to Zappy-Link</h1>
+          <h1 class="card-title text-3xl font-bold">Welcome to Zappy-Link ⚡</h1>
           {user ? (
             <>
               <p class="text-lg">
@@ -93,8 +93,9 @@ export function HomePage({ user }: { user?: { login: string } }) {
               </div>
             </>
           ) : (
-            <a href="/oauth/signin" class="btn btn-primary mt-4">
-              Sign In with GitHub
+            <a href="/oauth/signin" className="btn btn-primary border-black mt-4">
+              <svg aria-label="GitHub logo" width="26" height="26" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"></path></svg>
+              Sign in with GitHub
             </a>
           )}
         </div>
@@ -230,7 +231,9 @@ export function LinksPage({ shortLinkList }: PageProps) {
           </h2>
 
           <div className="space-y-3 sm:space-y-4">
-            {shortLinkList?.map((link) => (
+            {shortLinkList
+            ?.filter((link): link is ShortLink => link !== null)
+            .map((link) => (
               <div
                 key={link.shortCode}
                 className="card bg-base-200 hover:bg-base-300 transition-colors rounded-lg"
@@ -283,7 +286,6 @@ export function LinksPage({ shortLinkList }: PageProps) {
   );
 }
 
-
 export function ShortlinkViewPage({ shortLink }: PageProps) {
   return (
     <Layout>
@@ -323,7 +325,7 @@ export function ShortlinkViewPage({ shortLink }: PageProps) {
                 </label>
                 <a
                   href={shortLink?.longUrl}
-                  className="link link-primary"
+                  className="link link-primary break-words break-all"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
