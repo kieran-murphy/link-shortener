@@ -11,7 +11,7 @@ interface PageProps {
 const BASE_URL =
   Deno.env.get("DENO_ENV") === "dev"
     ? "http://localhost:8000"
-    : "https://link.fireship.app";
+    : "https://zappy-link-shortener.deno.dev"
 
 export function Layout({ children }: { children: ComponentChildren }) {
   return (

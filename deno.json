@@ -3,7 +3,7 @@
     "dev": "deno serve --watch --unstable-kv --env -A src/main.ts",
     "docker": "./docker-serve.sh",
     "test": "deno test tests/",
-    "deploy": "deployctl deploy --project kmurp-link-shortener"
+    "deploy": "deployctl deploy --project zappy-link-shortener"
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
